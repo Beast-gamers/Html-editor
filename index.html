@@ -9,27 +9,10 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        .editor-container {
-            width: 100%;
-            border: 1px solid #ccc;
-            padding: 10px;
-            min-height: 150px;
-        }
-        .output-container {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            width: 100%;
-        }
         textarea {
             width: 100%;
             height: 150px;
             margin-bottom: 10px;
-        }
-        iframe {
-            width: 100%;
-            border: none;
         }
     </style>
 </head>
@@ -37,42 +20,44 @@
 
     <h2>HTML, CSS, and JS Editor</h2>
 
-    <textarea id="html-editor">
-<h1>Hello World</h1>
-<style>h1 { color: red; }</style>
-<script>console.log("JavaScript is working!");</script>
-    </textarea>
+    <form action="render.html" method="post" target="_blank" id="editor-form">
+        <label for="html-editor">HTML:</label>
+        <textarea id="html-editor" name="html"><h1>Hello World</h1></textarea>
 
-    <button onclick="updateOutput()">Render</button>
+        <label for="css-editor">CSS:</label>
+        <textarea id="css-editor" name="css">h1 { color: red; }</textarea>
 
-    <h2>Rendered Output</h2>
-    <div class="output-container">
-        <iframe id="output"></iframe>
-    </div>
+        <label for="js-editor">JavaScript:</label>
+        <textarea id="js-editor" name="js">console.log("JavaScript is working!");</textarea>
+
+        <button type="button" onclick="submitForm()">Render on New Page</button>
+    </form>
 
     <script>
-        function updateOutput() {
+        function submitForm() {
+            const form = document.getElementById('editor-form');
+            // Convert the form data to a string format that will be parsed on the render page
             const htmlContent = document.getElementById('html-editor').value;
-            const iframe = document.getElementById('output');
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            const cssContent = document.getElementById('css-editor').value;
+            const jsContent = document.getElementById('js-editor').value;
 
-            // Write the content to the iframe
-            iframeDoc.open();
-            iframeDoc.write(`
+            const formData = `
                 <!DOCTYPE html>
                 <html lang="en">
-                <head></head>
+                <head>
+                    <style>${cssContent}</style>
+                </head>
                 <body>
                     ${htmlContent}
+                    <script>${jsContent}<\/script>
                 </body>
                 </html>
-            `);
-            iframeDoc.close();
-
-            // Adjust iframe height to match the content
-            iframe.onload = function() {
-                iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
-            }
+            `;
+            
+            // Use a custom form submission to pass the form data to the next page
+            const newWindow = window.open();
+            newWindow.document.write(formData);
+            newWindow.document.close();
         }
     </script>
 
