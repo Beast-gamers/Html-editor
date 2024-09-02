@@ -13,6 +13,7 @@
             width: 100%;
             height: 150px;
             margin-bottom: 10px;
+            font-family: monospace;
         }
     </style>
 </head>
@@ -20,27 +21,35 @@
 
     <h2>HTML, CSS, and JS Editor</h2>
 
-    <form action="render.html" method="post" target="_blank" id="editor-form">
+    <form id="editor-form" target="_blank">
         <label for="html-editor">HTML:</label>
-        <textarea id="html-editor" name="html"><h1>Hello World</h1></textarea>
+        <textarea id="html-editor" name="html" placeholder="<h1>Hello World</h1>"></textarea>
 
         <label for="css-editor">CSS:</label>
-        <textarea id="css-editor" name="css">h1 { color: red; }</textarea>
+        <textarea id="css-editor" name="css" placeholder="h1 { color: red; }"></textarea>
 
         <label for="js-editor">JavaScript:</label>
-        <textarea id="js-editor" name="js">console.log("JavaScript is working!");</textarea>
+        <textarea id="js-editor" name="js" placeholder="console.log('JavaScript is working!');"></textarea>
 
         <button type="button" onclick="submitForm()">Render on New Page</button>
     </form>
 
     <script>
         function submitForm() {
-            const form = document.getElementById('editor-form');
-            // Convert the form data to a string format that will be parsed on the render page
-            const htmlContent = document.getElementById('html-editor').value;
-            const cssContent = document.getElementById('css-editor').value;
-            const jsContent = document.getElementById('js-editor').value;
+            const htmlEditor = document.getElementById('html-editor');
+            const cssEditor = document.getElementById('css-editor');
+            const jsEditor = document.getElementById('js-editor');
 
+            // Placeholder values if no content is provided
+            const defaultHTML = "<h1>Hello World</h1>";
+            const defaultCSS = "h1 { color: red; }";
+            const defaultJS = "console.log('JavaScript is working!');";
+
+            const htmlContent = htmlEditor.value.trim() || defaultHTML;
+            const cssContent = cssEditor.value.trim() || defaultCSS;
+            const jsContent = jsEditor.value.trim() || defaultJS;
+
+            // Combine all content into a single HTML document
             const formData = `
                 <!DOCTYPE html>
                 <html lang="en">
@@ -54,7 +63,7 @@
                 </html>
             `;
             
-            // Use a custom form submission to pass the form data to the next page
+            // Open a new window and render the content
             const newWindow = window.open();
             newWindow.document.write(formData);
             newWindow.document.close();
