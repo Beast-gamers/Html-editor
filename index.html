@@ -3,105 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Game</title>
+    <title>HTML, CSS, and JS Editor</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
-
-        #chessboard {
-            display: grid;
-            grid-template-columns: repeat(8, 80px);
-            grid-template-rows: repeat(8, 80px);
-            border: 4px solid black;
+        .editor-container {
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 150px;
         }
-
-        .tile {
-            width: 80px;
-            height: 80px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 50px;
+        .output-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 150px;
+            background-color: #f9f9f9;
         }
-
-        .white {
-            background-color: #f0d9b5;
-        }
-
-        .black {
-            background-color: #b58863;
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-<div id="chessboard"></div>
+    <h2>HTML, CSS, and JS Editor</h2>
 
-<script>
-    const chessboard = document.getElementById("chessboard");
+    <label for="html-editor">HTML:</label>
+    <textarea id="html-editor"><p>Edit this HTML content...</p></textarea>
 
-    // Define the initial chessboard state
-    let board = [
-        ["r", "n", "b", "q", "k", "b", "n", "r"],
-        ["p", "p", "p", "p", "p", "p", "p", "p"],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["P", "P", "P", "P", "P", "P", "P", "P"],
-        ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ];
+    <label for="css-editor">CSS:</label>
+    <textarea id="css-editor">p { color: blue; }</textarea>
 
-    // Chess symbols
-    const pieces = {
-        "r": "♜", "n": "♞", "b": "♝", "q": "♛", "k": "♚", "p": "♟",
-        "R": "♖", "N": "♘", "B": "♗", "Q": "♕", "K": "♔", "P": "♙"
-    };
+    <label for="js-editor">JavaScript:</label>
+    <textarea id="js-editor">console.log("Hello, World!");</textarea>
 
-    // Render the chessboard
-    function renderBoard() {
-        chessboard.innerHTML = "";
-        for (let row = 0; row < 8; row++) {
-            for (let col = 0; col < 8; col++) {
-                const tile = document.createElement("div");
-                tile.classList.add("tile");
-                tile.classList.add((row + col) % 2 === 0 ? "white" : "black");
-                tile.dataset.row = row;
-                tile.dataset.col = col;
-                tile.textContent = pieces[board[row][col]] || "";
-                tile.addEventListener("click", handleTileClick);
-                chessboard.appendChild(tile);
-            }
+    <button onclick="updateOutput()">Render</button>
+
+    <h2>Rendered Output</h2>
+    <iframe id="output" class="output-container"></iframe>
+
+    <script>
+        function updateOutput() {
+            const htmlContent = document.getElementById('html-editor').value;
+            const cssContent = document.getElementById('css-editor').value;
+            const jsContent = document.getElementById('js-editor').value;
+
+            const iframe = document.getElementById('output');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            iframeDoc.open();
+            iframeDoc.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <style>${cssContent}</style>
+                </head>
+                <body>
+                    ${htmlContent}
+                    <script>${jsContent}<\/script>
+                </body>
+                </html>
+            `);
+            iframeDoc.close();
         }
-    }
-
-    let selectedPiece = null;
-
-    // Handle tile click
-    function handleTileClick(event) {
-        const row = parseInt(event.target.dataset.row);
-        const col = parseInt(event.target.dataset.col);
-
-        if (selectedPiece) {
-            // Move piece
-            board[row][col] = board[selectedPiece.row][selectedPiece.col];
-            board[selectedPiece.row][selectedPiece.col] = "";
-            selectedPiece = null;
-            renderBoard();
-        } else if (board[row][col]) {
-            // Select piece
-            selectedPiece = { row, col };
-        }
-    }
-
-    // Initial render
-    renderBoard();
-</script>
+    </script>
 
 </body>
 </html>
