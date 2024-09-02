@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .editor-container {
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 150px;
+        }
+        .output-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 150px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>HTML Editor</h2>
+    
+    <div class="editor-container" contenteditable="true" id="editor">
+        <p>Edit this HTML content...</p>
+    </div>
+
+    <button onclick="updateOutput()">Render HTML</button>
+
+    <h2>Rendered Output</h2>
+    <div class="output-container" id="output"></div>
+
+    <script>
+        function updateOutput() {
+            const editorContent = document.getElementById('editor').innerHTML;
+            document.getElementById('output').innerHTML = editorContent;
+        }
+    </script>
+
+</body>
+</html>
