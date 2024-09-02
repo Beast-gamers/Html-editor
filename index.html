@@ -3,46 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Editor</title>
+    <title>Chess Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        .editor-container {
-            width: 100%;
-            border: 1px solid #ccc;
-            padding: 10px;
-            min-height: 150px;
+
+        #chessboard {
+            display: grid;
+            grid-template-columns: repeat(8, 80px);
+            grid-template-rows: repeat(8, 80px);
+            border: 4px solid black;
         }
-        .output-container {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            min-height: 150px;
-            background-color: #f9f9f9;
+
+        .tile {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+        }
+
+        .white {
+            background-color: #f0d9b5;
+        }
+
+        .black {
+            background-color: #b58863;
         }
     </style>
 </head>
 <body>
 
-    <h2>HTML Editor</h2>
-    
-    <div class="editor-container" contenteditable="true" id="editor">
-        <p>Edit this HTML content...</p>
-    </div>
+<div id="chessboard"></div>
 
-    <button onclick="updateOutput()">Render HTML</button>
+<script>
+    const chessboard = document.getElementById("chessboard");
 
-    <h2>Rendered Output</h2>
-    <div class="output-container" id="output"></div>
+    // Define the initial chessboard state
+    let board = [
+        ["r", "n", "b", "q", "k", "b", "n", "r"],
+        ["p", "p", "p", "p", "p", "p", "p", "p"],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["P", "P", "P", "P", "P", "P", "P", "P"],
+        ["R", "N", "B", "Q", "K", "B", "N", "R"]
+    ];
 
-    <script>
-        function updateOutput() {
-            const editorContent = document.getElementById('editor').innerHTML;
-            document.getElementById('output').innerHTML = editorContent;
+    // Chess symbols
+    const pieces = {
+        "r": "♜", "n": "♞", "b": "♝", "q": "♛", "k": "♚", "p": "♟",
+        "R": "♖", "N": "♘", "B": "♗", "Q": "♕", "K": "♔", "P": "♙"
+    };
+
+    // Render the chessboard
+    function renderBoard() {
+        chessboard.innerHTML = "";
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const tile = document.createElement("div");
+                tile.classList.add("tile");
+                tile.classList.add((row + col) % 2 === 0 ? "white" : "black");
+                tile.dataset.row = row;
+                tile.dataset.col = col;
+                tile.textContent = pieces[board[row][col]] || "";
+                tile.addEventListener("click", handleTileClick);
+                chessboard.appendChild(tile);
+            }
         }
-    </script>
+    }
+
+    let selectedPiece = null;
+
+    // Handle tile click
+    function handleTileClick(event) {
+        const row = parseInt(event.target.dataset.row);
+        const col = parseInt(event.target.dataset.col);
+
+        if (selectedPiece) {
+            // Move piece
+            board[row][col] = board[selectedPiece.row][selectedPiece.col];
+            board[selectedPiece.row][selectedPiece.col] = "";
+            selectedPiece = null;
+            renderBoard();
+        } else if (board[row][col]) {
+            // Select piece
+            selectedPiece = { row, col };
+        }
+    }
+
+    // Initial render
+    renderBoard();
+</script>
 
 </body>
 </html>
